@@ -1,0 +1,75 @@
+\item[(b)] \subquestionpoints{5}
+As you showed in the last part, calibration  by  itself  does  not necessarily guarantee good accuracy. 
+Good models must also be sharp, i.e., the probabilities output by the model should be close to $0$ or $1$. 
+Mean squared error (MSE) is a common measure for evaluating the quality of a model.
+\begin{align}
+	\text{MSE}(h) = \E \left[(Y-h(X))^2\right]
+\end{align}
+
+\begin{table}
+	\centering
+	\begin{tabular}{ccccc} \toprule
+		$x$&$P[X=x]$&$P[Y=1 \mid X=x]$&$h(x)$&$T(x)=\E [Y \mid h(X)=h(x)]$\\ \midrule
+		0&0.25&0.2&0.3&0.1\\
+		1&0.25&0.0&0.3&0.1\\
+		2&0.25&1.0&0.9&0.9\\ 
+		3&0.25&0.8&0.9&0.9\\ \bottomrule
+	\end{tabular}
+	\caption{\label{tab:t-example} An example of a model $h : \mathcal{X}=\{0,1,2,3\} \rightarrow [0,1]$.  
+		For calculating $T(x)$, we look at all data points with the same score $h(x)$, and compute the probability of $Y=1$ for these data points.}
+\end{table}
+
+
+
+In this part, we will show that the MSE can be decomposed to two parts, such that one part corresponds to the calibration error, and the other part corresponds to the sharpness of the model.
+
+
+Formally, let $T(x) = \Pr [Y =1 \mid h(X) = h(x)]$ denote the true probability of $Y=1$ given that the prediction is equal to $h(x)$.
+Intuitively, for a data point $x$, $T(x)$ is the probability of $Y=1$ for all the data points with the same score as $x$. See Table~\ref{tab:t-example} for an example.
+%\tnote{Now I am reading this, I felt that this is a bit challenging to understand. What does it mean by conditioning on a random variable which is a function of some other random variable. perhaps think about how to interpret or clarify this.}
+%\fk{I think is better now with the example}
+
+
+Define calibration error CE to be\footnote{There are other definition of calibration errors, e.g., the one introduced in the next part.}:
+\begin{align}
+	\text{CE}(h) = \E [(T(X) - h(X))^2]
+\end{align}
+The calibration error here is a quantitative instantiation of the notion of perfect calibration in equation~\eqref{eqn:4}.  Indeed,  zero calibration error implies perfect calibration: zero calibration means the model perfectly predicts the true probability, i.e., $h(X) = T(X)$ w.p. 1. This in turns implies that the model is perfectly calibrated because for any $p$ such that $\Pr[h(X)=p] > 0$, we can take some $x_0$ such that $h(x_0) = p$ and $h(x_0)=T(x_0)$, and conclude
+\begin{align}
+P[Y=1\mid h(X)= p] & = P[Y=1\mid h(X)= h(x_0)] \\
+& = T(x_0) = h(x_0) \tag{by calibration error = 0} \\
+& = p \tag{by the assumption that $h(x_0)= p$}
+\end{align}
+%\begin{align}
+%\Pr[Y=1 \vert h(X)=p] & = \frac{\Pr[Y=1,  h(X)=p]}{\Pr[h(X)= p]}  \nonumber\\
+%& = \frac{\sum_{x\in \mathcal{X}: h(x)= p}\Pr[Y=1,  X=x]}{\Pr[h(X)= p]}  \nonumber\\
+%& = \frac{\sum_{x\in \mathcal{X}: h(x)= p}\Pr[Y=1\vert X=x]}{\Pr[h(X)= p]}  \nonumber\\
+%\end{align}
+As explained before, we want our model prediction to be sharp as well. 
+%Not only predicting marginal probability for every data point. 
+One way to define sharpness of a model is to look at the variance of $T(X)$. 
+%\tnote{ah the definition of the sharpness is indeed not necessary. sorry I got confused! but I think we can keep this below}
+%\fk{I think we should remove it if you think it's not necessary there are already too much definitions in this excercise!}
+Let's define sharpness of model $h$ as follows:
+\begin{align}
+\text {SH}(h) = \text {Var} (T(X))
+\end{align}
+%Let's $\text {Var} (T(X))$ denote the sharpness of the prediction.
+The sharpness term measures how much variation there is in the true probability across model prediction.
+It is very small when $T(x)$ is similar for all data points. 
+%It is maximized by making $T(X)$ closer to $0$ or $1$. \tnote{this is not exactly accurate because if all the $T(X)$ is 0 or 1 then the variance is small. Perhaps say when it's minimized instead of maximized. Then it's easier.}\tnote{to add: the smaller it is, the sharper the model is}
+
+MSE can be decomposed as follows:
+\begin{align}
+	\label{eqn:mse-decomposiiton}
+	\text {MSE}(h) = \underbrace{\text {Var}[Y]}_{\text {Instrinsic uncertainty}} - \underbrace{\text {Var} [T(X)]}_\text{Sharpness} + \underbrace{\E \left [(T(X) - h(X))^2\right]}_\text{Calibration error}
+\end{align}
+
+This decomposition states that by minimizing MSE we try to find a sharp model with small calibration error.
+In other words, when we choose a model with minimum MSE it means between two models with the same calibration error we prefer the one that is sharper and between two models with the same sharpness we prefer the one with lower calibration error.
+Note that the uncertainty term does not depend on the model and can be mostly ignored.
+
+\noindent{\bf Prove that the decomposition in Equation~\eqref{eqn:mse-decomposiiton} is correct.}
+
+%\noindent{\bf Remark} There are other meaningful notions of sharpness and calibration errors, for example, those introduced in the next part. 
+

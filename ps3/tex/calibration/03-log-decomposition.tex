@@ -1,0 +1,46 @@
+\item[(c)] \subquestionpoints{0} [{\bf{This part is optional and does not have any points}}]
+In the previous part, we studied MSE and decomposed it to two terms corresponding to the sharpness and calibration error.
+But as we explained, there are other different ways to measure the calibration and sharpness of a model.
+In this part we focus on logistic regression models.
+%Logistic regression tends to output well calibrated probabilities (this is
+%often not true with other classifiers such as SVMs). 
+%We will
+%dig a little deeper in order to understand why this is the case, and find that
+%the structure of the loss function explains this property.
+In particular, we are going to show logistic loss can also be decomposed to two terms; where one term can be interpreted as the sharpness of the prediction (which we call log-sharpness) and the other can be interpreted as the calibration error (which we call log-calibration-error).  
+Recall that the logistic loss (on population) of the model $h$ is defined as:
+\begin{align}
+\text {Log-Loss}(h) = \E [-Y \log (h(X)) - (1-Y) \log (1-h(X))]
+\end{align}
+
+Prove that logistic loss can be decomposed to two terms as follows:
+\begin{align}
+\text {Log-Loss}(h) =&\underbrace{\E \left [T(X) \log \left(\frac{T(X)}{h(X)}\right) + (1-T(X)) \log \left(\frac{1-T(X)}{1-h(X)}\right)\right ]}_\text {log-calibration-error} \nonumber \\
+&-\underbrace{\E \left [T(X) \log (T(X)) + (1-T(X)) \log (1-T(X)) \right]}_\text {log-sharpness}\label{eqn:log-decompose}
+\end{align}
+
+Discuss why the log-calibration-error term in \eqref{eqn:log-decompose} is a meaningful term for measuring the calibration error and specify when it attains its minimum.
+Similarly discuss why log-sharpness term in \eqref{eqn:log-decompose}  is a meaningful term for measuring the sharpness of a model and specify when it attains its maximum.
+
+\paragraph{Hint.} 
+
+For showing that log-calibration-error and log-sharpness are meaningful terms, you should use your information theory knowledge (there is a section about information theory in the previous question).
+%
+For each data point $x$, both model prediction ($h(x)$) and underlying probability ($T(x)$) define a distribution over the label set $\mathcal{Y} = \{0,1\}$.
+In particular, define distribution $P_1$ on $\mathcal{Y}=\{0,1\}$ as follows:
+$P_1(Y=1) = T(x)$ and $P_1(Y=0) = 1-T(x)$. 
+Similarly, define distribution $P_2$ on $\mathcal{Y}=\{0,1\}$ as follows: $P_2(Y=1) = h(x)$ and $P_2(Y=0) = 1-h(x)$. 
+You can interpret the log-calibration-error in \eqref{eqn:log-decompose} as KL-divergence distance between these two distributions. 
+%\tnote{Ii think it's fine to just give the exact formula here to further reduce the difficulty? or perhaps instead wee should should reveal what's $P_1$ and $P_2$ that we are thinking}
+Recall that the KL divergence distance between these two distributions is:
+\begin{align}
+	\infdiv{P_1}{P_2} = P_1(Y=0) \log\left(\frac{P_1(Y=0)}{P_2(Y=0)}\right) + P_1(Y=1) \log\left(\frac{P_1(Y=1)}{P_2(Y=1)}\right) 
+\end{align} 
+The log-sharpness term in \eqref{eqn:log-decompose} can be expressed as the negative entropy of the distribution corresponding to $T(x)$. 
+Recall that entropy of distribution $P_1$ is:
+\begin{align}
+	\text {H}(P_1) = -P_1(Y=0)\log(P_1(Y=0)) - P_1(Y=1)\log(P_1(Y=1))
+\end{align}
+
+\noindent{\bf Remark: } 
+The decomposition suggests that minimizing the logistic loss (on the population) tends to minimize the calibration error as well, since the calibration error is upper bounded by the logistic loss. In practice, when the train and test sets are from the same distribution and when the model has not overfit or underfit, logistic regression tends to be well calibrated on the test data as well.  In contrast, modern large-scale deep learning models trained with the logistic loss are typically not well-calibrated, likely since the population  logistic loss suffers from overfitting (the test loss is much higher than the train loss), even when there is little overfitting in terms of the accuracy. As such, often people use other recalibration methods to adjust the outputs of a deep learning model to be better calibrated.

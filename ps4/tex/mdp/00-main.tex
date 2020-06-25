@@ -1,0 +1,23 @@
+\item \points{15} {\bf Markov decision processes}
+
+Consider an MDP with finite state and action spaces, and discount
+factor $\gamma < 1$.  Let $B$ be the Bellman update operator with
+$V$ a vector of values for each state. I.e., if $V' = B(V)$, then
+\[
+V'(s) = R(s) + \gamma \max_{a\in A} \sum_{s'\in S} P_{sa}(s')
+V(s').
+\]
+
+\begin{enumerate}
+\input{mdp/01-contraction}
+\ifnum\solutions=1 {
+  \input{mdp/01-contraction-sol.tex}
+} \fi
+
+\input{mdp/02-unique}
+\ifnum\solutions=1 {
+  \input{mdp/02-unique-sol.tex}
+} \fi
+
+\end{enumerate}
+

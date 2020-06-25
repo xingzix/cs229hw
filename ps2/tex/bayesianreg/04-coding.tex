@@ -1,0 +1,34 @@
+\item \subquestionpoints{5} Coding question:  double descent phenomenon and the effect of regularization. 
+
+The Bayesian perspective provides a justification of using the $L_2$ regularization term as in equation~\eqref{eqn:1}, and it also provides a formula for the optimal choice of $\lambda$, assuming that we know the true prior for $\theta$. For real-world applications, we often do not know the true prior, so $\lambda$ is tuned based on the performance on the validation dataset. In this problem, you will be asked to verify empirically that  the choice of $\lambda$ you derived in part (c) is close to optimal, when the generating process of the data, $\theta$, and the label $y$ are as exactly described in part (c). 
+
+Meanwhile, you will empirically observe an interesting phenomenon, often called double descent, which was first discovered in 1970s and recently returned to spotlight. Sample-wise double descent is the phenomenon that the validation loss of some learning algorithm or estimator does not monotonically decrease as we have more training examples, but instead has a curve with two U-shaped parts. Model-wise double descent is a similar phenomenon as we increase the size of the model. For simplicity, here we only focus on the sample-wise double descent.  
+
+You will be asked to train on various datasets by minimizing the regularized cost function with various choices of $\lambda$: 
+\begin{align}
+- \log p(\vec{y}|X,\theta) + \lambda||\theta||^2_2 \label{eqn:3}
+\end{align}
+and plot the validation losses for the choices of datasets and $\lambda$. You will observe the double descent phenomenon for relatively small $\lambda$ but not the optimal choice of $\lambda.$
+
+\noindent{\bf Problem details: } We assume that the data are generated as described in part (c) with $d=500, \sigma=0.5$. You are asked to have a Gaussian prior $\theta \sim \mathcal{N}(0,\eta^2 I)$ with $\eta=1/\sqrt{d}$ on the parameter $\theta$. (The teaching staff indeed generated the ground-truth $\theta$ from this prior.) 
+
+You are given $13$ training datasets of sample sizes $n  = 200, 250, \dots, 750$, and $800$, and a validation dataset, located at
+\begin{itemize}
+	\item \texttt{src/bayesianreg/train200.csv}, \texttt{train250.csv}, etc.
+	\item \texttt{src/bayesianreg/validation.csv}
+\end{itemize} 
+
+Let $\lambda_{opt}$ denote the regularization strength that you derived from part (c). ($\lambda_{opt}$  is a function of $\sigma$ and $\eta$.)
+
+For each training dataset $(X, \vec{y})$ and each $\lambda \in \{0, 1/32, 1/16, 1/8, 1/4 , 1/2, 1, 2, 4\} \times \lambda_{opt}$, compute the optimizer of equation~\eqref{eqn:3}, and evaluate the mean-squared-error of the optimizer on the validation dataset. 
+
+Complete the \texttt{ridge\_regression} method of \texttt{src/doubledescent/doubledescent.py} which takes in a training file and a validation file, computes the $\theta$ that minimizes training objective under different regularization strengths, and returns a list of validation errors (one for each choice of $\lambda$).
+
+Include in your writeup a plot of the validation losses of these models. The x-axis is the size of the training dataset (from 200 to 800); the y-axis is the MSE on the validation dataset. Draw one line for each choice of $\lambda$ connecting the validation errors across different training dataset sizes. Therefore, the plot should contain 9$\times$13 points and 9 lines connecting them. 
+
+You should observe that for those choices of $\lambda$ with $\lambda<\lambda_{opt}$, the validation error may increase and then decrease as we increase the sample size. 
+However, double descent does not occur for $\lambda_{opt}$ or any regularization larger than $\lambda_{opt}$. 
+
+\textbf{Note:} Use the Moore-Penrose pseudo-inverse as implemented in \texttt{numpy.linalg.pinv} if your matrix is singular.
+
+\textbf{Remark: } If you would like to know more about double descent, please feel free to check out the partial list of references in the introduction and related work \footnote{Nakkiran, P., Venkat P., Kakade, S., Ma, T. Optimal Regularization Can Mitigate Double Descent. arXiv e-prints (Mar. 2020). arXiv:2003.01897} but knowing the references or papers are unnecessary for solving this homework problem. Roughly speaking, it is mostly caused by the lack of regularization when $n \approx d$. When $n\approx d$, the data matrix is particularly ill-conditioned and stronger and more explicit regularization is needed.

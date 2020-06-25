@@ -1,0 +1,29 @@
+\item \points{10} {\bf Linear invariance of optimization algorithms}
+
+Consider using an iterative optimization algorithm (such as Newton's method,
+or gradient descent) to minimize some continuously differentiable
+function $f(x)$.  Suppose we initialize the algorithm at $x^{(0)} = \vec{0}$.
+When the algorithm
+runs, it will produce a value of $x \in \Re^\di$ for each iteration:
+$x^{(1)}, x^{(2)}, \ldots$.
+
+Now, let some non-singular square matrix $A \in \Re^{\di\times \di}$ be given, and
+define a new function $g(z) = f(Az)$.  Consider using
+the same iterative optimization algorithm to optimize $g$ (with initialization
+$z^{(0)} = \vec{0}$). If the values $z^{(1)}, z^{(2)}, \ldots$ produced by this
+method necessarily satisfy $z^{(i)} = A^{-1}x^{(i)}$ for all $i$, we say this
+optimization algorithm is {\bf invariant to linear reparameterizations}.
+
+
+\begin{enumerate}
+        \input{linear-invariance/01-newton.tex}
+        \ifnum\solutions=1
+                \input{linear-invariance/01-newton-sol.tex}
+        \fi
+
+        \input{linear-invariance/02-gradient-descent.tex}
+        \ifnum\solutions=1
+                \input{linear-invariance/02-gradient-descent-sol.tex}
+        \fi
+
+\end{enumerate}

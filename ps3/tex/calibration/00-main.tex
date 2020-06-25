@@ -1,0 +1,82 @@
+\item \points{8} {\bf Model Calibration.}
+\renewcommand{\Pr}{P}
+In this question, we will discuss the uncertainty qualification of the machine learning models, and, in particular, a specific notion of uncertainty quantification called calibration. 
+In many  real-world applications such as policy-making or health care, prediction by machine learning models is not the end goal. Such predictions are used as  the input to decision making process which needs to balances risks and rewards, both of which are often uncertain. Therefore, machine learning models not only need to produce a single prediction for each example, but also to measure the uncertainty of the prediction. 
+
+In this question we consider the binary classification setting. Let $\mathcal{X}$ be the input space and $\mathcal{Y}=\{0,1\}$ be the label space. For simplicity, we assume that $\mathcal{X}$ is a discrete space of finite number of elements. Let $X$ and $Y$ be random variables denoting the input and label, respectively, over $\mathcal{X}$ and $\mathcal{Y}$, respectively. Let $X,Y$ have a joint distribution $\mathcal{P}$. 
+Suppose we have a model $h:\mathcal{X} \rightarrow [0,1]$ (here we dropped the dependency on the parameters $\theta$ because the parameterization is not relevant to the discussion.) Recall that in logistical regression, we assume that there exists some model $h^\star(\cdot)$ (parameterized by a certain form, e.g., linear functions or neural networks) such that the output of the model $h^\star$ represents the conditional probability of $Y$ being 1 given $X$:
+\begin{align}
+P\left[Y = 1 \vert X = x\right] = h^\star(x) \label{eqn:1}
+\end{align}
+%the  output of the model represents the model’s confidence (probability) that the label is $1$.  
+Under this assumption, we can derive the logistic loss to train and obtain some model $h(\cdot)$. Recall that the decision boundary is typically set to correspond to $h(x) = 1/2$, which means that the prediction of $x$ is 1 if $h(x) \ge 1/2$, and 0 if $h(x) < 1/2$. To quantify the uncertainty of the prediction, it's tempting to just use the value of $h(x)$ --- the closer $h(x)$ is to 0 or 1, the more confident we are with our prediction. 
+
+How do we know whether the learned model $h(\cdot)$ indeed outputs a reliable and truthful probability $h(x)$? We note that we shouldn't take it for granted because a) the assumption~\eqref{eqn:1} may not exactly be satisfied by the data, and b) even if the assumption~\eqref{eqn:1} holds perfectly, the learned model $h(x)$ may be different from the true model $h^\star$ that satisfies~\eqref{eqn:1}. 
+
+We will introduce a  metric to evaluate how reliably the probabilities output by a model $h$ capture the confidence of the model.
+In order for these probabilities to be useful as confidence measures, we would ideally like them to be \emph{calibrated} in the following sense.  
+Calibration intuitively requires that among all the examples for which the model predicts the value 0.7, indeed 70\% of them should have label 1. %that whenever a model assigns $0.7$ probability to an event, it should be the case that the event actually holds about $70\%$ of the time. 
+
+
+Formally, we say that a model $h$ is perfectly calibrated if for all possible probabilities $p \in [0,1]$ such that $\Pr[h(X)= p ] > 0$, \begin{align}
+\Pr[Y= 1\mid h(X) =p] =p.\label{eqn:4}\end{align} Recall that $(X,Y)$ is a random draw from the (population) data distribution. 
+
+In the example in Table~\ref{tab:t-example}, the model $h$ is not perfectly calibrated, because for $p = 0.3$, 
+\begin{align}
+P[Y= 1\mid h(X) = 0.3] &= P[Y= 1\mid X = 0 \textup{ or } 1] \nonumber\\
+& = \frac{\Pr[Y= 1 \textup{ and } (X = 0 \textup{ or } 1) ]}{P[X = 0 \textup{ or } 1]} \nonumber\\
+& = \frac{\Pr[Y= 1 \textup{ and } X = 0 ] + \Pr[Y= 1 \textup{ and } X = 1 ]}{P[X = 0 \textup{ or } 1]} \nonumber\\
+& = \frac{\Pr[Y= 1 \mid  X = 0 ]\Pr[X=0] + \Pr[Y= 1 \mid  X = 1]\Pr[X=1]}{P[X = 0 \textup{ or } 1]} \nonumber\\
+& = \frac{0.2\times 0.25+ 0.0\times 0.25}{0.5} = 0.1 \neq 0.3 \nonumber
+\end{align}
+
+
+
+\DeclarePairedDelimiterX{\infdivx}[2]{(}{)}{%
+	#1\;\delimsize\|\;#2%
+}
+\newcommand{\infdiv}{D_{\text{KL}}\infdivx}
+
+
+\begin{enumerate}
+
+	
+\input{calibration/01-accuracy}
+	
+	\ifnum\solutions=1 {
+		\input{calibration/01-accuracy-sol}
+	} \fi
+
+	\input{calibration/02-mse-decomposition}
+	
+	\ifnum\solutions=1 {
+		\input{calibration/02-mse-decomposition-sol}
+	} \fi
+\end{enumerate}
+
+
+
+%any scoring function can be written as :
+%
+%\begin{align}
+%	p(x)g_1(x) + (1-p(x))g_2(x)
+%\end{align}
+%for squared error loss $s(x) = p(x)(1-x)^2 + (1-p(x))x^2$.
+%
+%under blah we can decompose the scoring function as follows:
+%
+%\begin{align}
+%&S_1 = \E [T(x)[g_1(x) - g_1(T(x))] + (1-T(x)(g_2(x) - g_2(\rho(x)))]\\
+%&S_2 = \E [T(x)g_1(T(x))+ (1-T(x))g_2(T(x))]\\	
+%\end{align}
+%
+% According to Theorem 4, whose proof will be given elsewhere, if the scoring rule is strictly proper, then we can regard Si as a measure of the forecaster's calibration. It is zero only for a well-calibrated forecaster and it is negative otherwise. Furthermore, we can regard S2 as a measure of the refinement or sufficiency of the forecaster. Since b is a convex function of p(x), we can show that, if two forecasters A and B are both well calibrated and A is at least as refined as B, then the value of S2 will be at least as large for A as it is for B (see DeGroot and Fienberg (1982) for a related discussion). In general, since +(t) is a strictly convex function on the interval 0 < t 1, it attains its maximum value at one endpoint or the other. Hence, the more concentrated the values of p(x) are near this endpoint, the larger the value of S2 will be. If g2(X) =g2(l - X), then +(t) will be symmetric with respect to t-=. In this case, the more concentrated the values of p(x) are near 0 and 1, the larger the value of S2 will be. As mentioned earlier, both the quadratic and the logarithmic scoring rules have this symmetry.
+
+
+\begin{enumerate}
+	\input{calibration/03-log-decomposition}
+	
+	\ifnum\solutions=1 {
+		\input{calibration/03-log-decomposition-sol}
+	} \fi
+\end{enumerate}

@@ -1,0 +1,29 @@
+\item \points{25} {\bf Learning Imbalanced dataset}
+
+In this problem, we study how to learn a classifier from an imbalanced dataset, where the marginal distribution of the classes/labels are imbalanced. Imbalanced datasets are ubiquitous in real-world applications. For example, in the spam detection problem, the training dataset usually has only a small fraction of spam emails (positive examples) but a large fraction of ordinary emails (negative examples). For simplicity, we consider binary classification problem where the labels are in $\{0,1\}$ and the number of positive examples is much smaller than the number of negative examples. 
+
+
+\begin{enumerate}
+        \input{imbalanced/01-evaluation}
+        \ifnum\solutions=1 {
+	  \input{imbalanced/01-evaluation-sol}
+        }\fi
+
+		\input{imbalanced/02-vanilla}
+		\ifnum\solutions=1 {
+			\input{imbalanced/02-vanilla-sol}
+		}\fi
+
+		\input{imbalanced/03-proof}
+		\ifnum\solutions=1 {
+		\input{imbalanced/03-proof-sol}
+		}\fi
+
+        \input{imbalanced/04-coding}
+        \ifnum\solutions=1 {
+        	\input{imbalanced/04-coding-sol}
+        }\fi
+   
+
+    
+\end{enumerate}

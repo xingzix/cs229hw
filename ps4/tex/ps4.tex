@@ -1,0 +1,61 @@
+
+
+\def\qtr{Spring 2020}
+\def\due{Wednesday, June 10 at 11:59pm}
+\def\piazza{\url{https://piazza.com/stanford/spring2020/cs229}}
+\def\psetnum{4 }
+
+
+%%% Change the following flag to toggle between questions or solutions
+\ifdefined\solutions {} \else \def\solutions{1} \fi
+
+\input{macros.tex}
+
+\begin{document}
+
+\pagestyle{myheadings} \markboth{}{CS229 Problem Set \#\psetnum}
+
+\ifnum\solutions=1{
+{\huge\noindent CS 229, \qtr\\
+Problem Set \#\psetnum Solutions}\\\\
+YOUR NAME HERE (\texttt{YOUR SUNET HERE})
+} \else {\huge
+\noindent CS 229, \qtr\\
+Problem Set \#\psetnum
+} \fi
+
+\ruleskip
+
+{\bf Due {\due } on Gradescope.}
+
+\medskip
+
+\input{00-instructions/00-main}
+
+\begin{enumerate}[wide, labelwidth=!, labelindent=0pt]
+
+
+\clearpage
+\input{mnist/00-main}
+
+\clearpage
+\input{pca/00-main}
+
+\clearpage
+\input{ica/00-main}
+
+\clearpage
+\input{mdp/00-main}
+
+\clearpage
+\input{cartpole/00-main}
+
+\clearpage
+
+
+\textbf{If you got here and finished all the above problems, you are done with the final PSet 
+of CS 229! We know these assignments are not easy, so well done :)}
+
+\end{enumerate}
+
+\end{document}
